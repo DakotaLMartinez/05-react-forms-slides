@@ -6,6 +6,7 @@ import LiveEditor from "./components/live-editor";
 import SoloEditor from "./components/solo-editor";
 import { Logo } from "./components/shared";
 import reactUsage from "./assets/react-usage.png";
+import Timer from './components/Timer';
 // import CodeSandbox from "./components/CodeSandbox";
 
 
@@ -190,6 +191,8 @@ In React, rather than looking into the DOM to get the form's input field values
 when the form is submitted, we use **state** to monitor the user's input **as
 they type**, so that our component state is always _in sync_ with the DOM.
 
+<img src="https://res.cloudinary.com/dnocv6uwb/image/upload/v1646072384/controlled-forms_j69gpu.svg" alt="Controlled Forms Diagram: Form State determines input values, user types in form triggering onChange events that update form state" />
+
 </Layout>
 
 <Notes>
@@ -265,15 +268,14 @@ Finally, On the `<form>` element, create an `onSubmit` listener and attach a `ha
 <SoloEditor>
 
 ```js
-function CommentForm() {
-  const [username, setUsername] = useState("");
-  const [comment, setComment] = useState("");
+export default function ControlledForm() {
+  const [name, setName] = useState("");
+  const [favSnack, setFavSnack] = useState("");
 
   return (
     <form>
-      <input type="text" name="username" />
-      <textarea name="comment" />
-      <button type="submit">Submit</button>
+      <input type="text" name="name" />
+      <input type="text" name="favSnack" />
     </form>
   );
 }
@@ -300,30 +302,29 @@ function CommentForm() {
 
 ##### 🛠 Process: Making a Controlled Form (onChange listeners)
 
-<small>We could make it a _controlled form_ by attaching onChange listeners to each input:
+<small>We could make it a <em>controlled form</em> by first attaching onChange listeners to each input:
 </small>
 <hr/>
 <div>
-<SoloEditor>
+<SoloEditor maxWidth="1200px">
 
 ```js
-function CommentForm() {
-  const [username, setUsername] = useState("");
-  const [comment, setComment] = useState("");
+export default function ControlledForm() {
+  const [name, setName] = useState("");
+  const [favSnack, setFavSnack] = useState("");
 
-  function handleUsernameChange(event) {
-    setUsername(event.target.value);
-  }
+  const handleNameChange = (event) => {
+    setName(event.target.value);
+  };
 
-  function handleCommentChange(event) {
-    setComment(event.target.value);
-  }
+  const handleSnackChange = (event) => {
+    setFavSnack(event.target.value);
+  };
 
   return (
     <form>
-      <input type="text" name="username" onChange={handleUsernameChange} />
-      <textarea name="comment" onChange={handleCommentChange} />
-      <button type="submit">Submit</button>
+      <input type="text" name="name" onChange={handleNameChange} />
+      <input type="text" name="favSnack" onChange={handleSnackChange} />
     </form>
   );
 }
@@ -351,24 +352,15 @@ function CommentForm() {
 ##### 🛠 Process: Making a Controlled Form (input values)
 
 
-Doing this creates a 1-way connection wherein user input changes `state`. This
-is called an _uncontrolled form_.
-
-To make it a 2-way street wherein `state` can change the user's input, we add a
-`value` attribute to our inputs.
+Doing this creates a 1-way connection wherein user input (behavior) changes `state` (data). This is called an _uncontrolled form_. To make it a 2-way street wherein `state` can change the user's input, we add a `value` attribute to our inputs.
 
 <div>
 <SoloEditor>
 
 ```jsx
 <form>
-  <input
-    type="text"
-    name="username"
-    onChange={handleUsernameChange}
-    value={username}
-  />
-  <textarea name="comment" onChange={handleCommentChange} value={comment} />
+  <input type="text" name="name" onChange={handleNameChange} value={name} />
+  <input type="text" name="favSnack" onChange={handleSnackChange} value={favSnack} />
 </form>
 ```
 
@@ -402,6 +394,56 @@ Each input element in the form, has:
 3. a `value` attribute set to that state variable
 
 In this way, React has total control of what appears in the controlled form's inputs because each input mirrors a piece of state.
+
+</Layout>
+
+<Notes>
+
+
+
+</Notes>
+
+<!-- End Slide -->
+
+--- 
+
+<!-- Begin Slide -->
+
+<Layout>
+
+Form data as individual pieces of state
+
+<iframe src="https://codesandbox.io/embed/controlled-form-with-individual-pieces-of-state-pbjpe4?fontsize=14&hidenavigation=1&theme=dark"
+  style={{width:"100%", height:"650px", border:"0", borderRadius: "4px", overflow:"hidden"}}
+  title="controlled-form-with-individual-pieces-of-state"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
+
+</Layout>
+
+<Notes>
+
+
+
+</Notes>
+
+<!-- End Slide -->
+
+--- 
+
+<!-- Begin Slide -->
+
+<Layout>
+
+Form data as a single object in state
+
+<iframe src="https://codesandbox.io/embed/controlled-form-with-object-as-formstate-v4x9zq?fontsize=14&hidenavigation=1&theme=dark"
+  style={{width:"100%", height:"650px", border:"0", borderRadius: "4px", overflow:"hidden"}}
+  title="controlled-form-with-individual-pieces-of-state"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
 
 </Layout>
 
@@ -494,7 +536,7 @@ Do we have an inverse data flow situation here?
 
 ### 🔍 Identifying the Need for Inverse Data Flow
 
-![React Inverse Data Flow](https://res.cloudinary.com/dnocv6uwb/image/upload/v1643998564/react-inverse-data-flow-diagram_cqpyyh.png)
+![React Inverse Data Flow](https://res.cloudinary.com/dnocv6uwb/image/upload/v1645996101/react-inverse-data-flow-diagram_ntoceo.png)
 
 What do we need to do with the `ProjectForm`?
 <br/>
@@ -538,9 +580,8 @@ What do we need to do with the `ProjectForm`?
 
 ## 🏋️‍♂️ Exercise 🏋️‍♂️
 
-Implement Inverse Data flow with a controlled form
-
-[Open Codesandbox](https://codesandbox.io/s/form-exercise-8rlgw) - instructions in `src/App.js`
+Implement Inverse Data flow with a controlled form - [Open Codesandbox](https://codesandbox.io/s/form-exercise-8rlgw) - instructions in `src/App.js`
+<Timer />
 
 <iframe src="https://codesandbox.io/embed/form-exercise-forked-8rlgw?fontsize=14&hidenavigation=1&theme=dark"
   style={{"width":"100%", height:"500px"}}

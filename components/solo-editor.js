@@ -3,11 +3,11 @@ import styled from "styled-components";
 import BaseEditor from "./base-editor";
 import { getCode } from "../utils";
 
-function SoloEditor({ children }) {
+function SoloEditor({ children, maxWidth }) {
   const code = getCode(children);
 
   return (
-    <Wrapper>
+    <Wrapper maxWidth={maxWidth}>
       <BaseEditor value={code} disabled height="auto" />
     </Wrapper>
   );
@@ -16,7 +16,7 @@ function SoloEditor({ children }) {
 const Wrapper = styled.div`
   box-shadow: rgb(0 0 0 / 50%) 0px 2px 10px 0px;
   background-color: hsl(0, 0%, 10%);
-  max-width: 750px;
+  max-width: ${props => props.maxWidth ? props.maxWidth : '750px'};
   width: 100%;
 `;
 
